@@ -1,31 +1,26 @@
 const express = require("express");
-const mysql = require("mysql");
-var connection = mysql.createConnection({
-    host: "ao9moanwus0rjiex.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
-    user: "z2v4wxa4d92rulpo",
-    password: "g3uqk5s2wyvtoq3r",
-    port: 3306,
-    database: "vsine0ibs4j6lk5u",
-});
-
 const router = express.Router();
+const sqlFunction = require("../../SqlFunction");
 
 //Get Post
 router.get("/:who", async (req, res) => {
-    let data = await get_data(req.params.who);
+    let data = await sqlFunction.get_data(req.params.who);
     res.send(data);
 });
 
-function get_data(name) {
-    return new Promise((resolve, reject) => {
-        connection.query(`SELECT * FROM ${name}`, function (err, rows, fields) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-}
+router.get("/", async (req, res) => {
+    let data = await sqlFunction.show_tableName();
+    res.send(data);
+});
+
+router.post("/setwarn", async (req, res) => {
+    sqlFunction.set_warn(req.body.names);
+    res.status(201).send();
+});
+
+// router.post("/warning", async (req, res) => {
+//     sqlFunction.warning();
+//     res.status(201).send();
+// });
 
 module.exports = router;
