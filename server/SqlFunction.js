@@ -34,28 +34,31 @@ const sqlFunction = {
             });
         });
     },
+    detect_walkStep(el, warnList) {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT WalkStep FROM ${el}`, function (err, data) {
+                if (err) {
+                    reject(err)
+                } else {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].WalkStep < 1200) {
+                            warnList.push(el.charAt(0).toUpperCase() + el.slice(1));
+                        }
+                    }
+                    resolve(true);
+
+                }
+            });
+        })
+
+    },
     async set_warn(namelist) {
         namelist = ["ben", "iris", "win"];
         warnList = [];
-        namelist.forEach((el) => {
-            connection.query(`SELECT WalkStep FROM ${el}`, function (err, data, fields) {
-                for (var i = 0; i < data.length; i++) {
-                    if (data[i].WalkStep < 1200) {
-                        connection.query(
-                            `UPDATE ${el} set Warn =? WHERE WalkStep = ?`,
-                            [1, data[i].WalkStep],
-                            function (err, result) {
-                                if (err) {
-                                    console.log(err);
-                                } else {
-                                    console.log(result);
-                                }
-                            }
-                        );
-                    }
-                }
-            });
-        });
+        for (let i = 0; i < namelist.length; i++) {
+            let temp = await this.detect_walkStep(namelist[i], warnList);
+        }
+        return warnList;
     },
 };
 

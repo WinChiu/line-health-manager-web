@@ -14,8 +14,8 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/setwarn", async (req, res) => {
-    sqlFunction.set_warn(req.body.names);
-    res.status(201).send();
+    let warnList = await sqlFunction.set_warn(req.body.names);
+    res.status(201).send(warnList);
 });
 
 // router.post("/warning", async (req, res) => {
