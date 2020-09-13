@@ -1,11 +1,12 @@
 <template>
   <div class="container">
-    <h1 v-if="name.length!=0">{{ name }}'s Health Data</h1>
-    <h1 v-if="name.length===0">Patient Health Data</h1>
+    <h1 v-if="showingPatient.length != 0">{{ showingPatient }}'s Health Data</h1>
+    <h1 v-if="showingPatient.length === 0">Patient Health Data</h1>
     <div class="nav">
-      <button v-on:click="get_data('win')">Win</button>
-      <button v-on:click="get_data('iris')">Iris</button>
-      <button v-on:click="get_data('ben')">Ben</button>
+      <button id="Win" v-on:click="get_data('win')">Win</button>
+      <button id="Iris" v-on:click="get_data('iris')">Iris</button>
+      <button id="Ben" v-on:click="get_data('ben')">Ben</button>
+      <p track-by="$index">Warning: {{ warnedPatients }}</p>
     </div>
     <hr />
     <p class="error" v-if="error">{{ error }}</p>
@@ -18,20 +19,20 @@
         v-for="(post, index) in posts"
         track-by="$index"
       >
-        <h3>Date:</h3>
-        <p>{{ post.Date }}</p>
-        <h3>SBP:</h3>
-        <p>{{ post.SBP }}</p>
-        <h3>DBP:</h3>
-        <p>{{ post.DBP }}</p>
-        <h3>BloodSugar:</h3>
-        <p>{{ post.BloodSugar }}</p>
-        <h3>WalkStep:</h3>
-        <p>{{ post.WalkStep }}</p>
-        <h3>SleepTime:</h3>
-        <p>{{ post.SleepTime }}</p>
-        <h3>DoctorID:</h3>
-        <p>{{ post.DocID }}</p>
+        <h3 class="infoTitle" :class="post.Name">Date:</h3>
+        <p id="Date" class="infoData" :class="post.Name">{{ post.Date }}</p>
+        <h3 class="infoTitle" :class="post.Name">SBP:</h3>
+        <p id="SBP" class="infoData" :class="post.Name">{{ post.SBP }}</p>
+        <h3 class="infoTitle" :class="post.Name">DBP:</h3>
+        <p id="DBP" class="infoData" :class="post.Name">{{ post.DBP }}</p>
+        <h3 class="infoTitle" :class="post.Name">BloodSugar:</h3>
+        <p id="BloodSugar" class="infoData" :class="post.Name">{{ post.BloodSugar }}</p>
+        <h3 class="infoTitle" :class="post.Name">WalkStep:</h3>
+        <p id="WalkStep" class="infoData" :class="post.Name">{{ post.WalkStep }}</p>
+        <h3 class="infoTitle" :class="post.Name">SleepTime:</h3>
+        <p id="SleepTime" class="infoData" :class="post.Name">{{ post.SleepTime }}</p>
+        <h3 class="infoTitle" :class="post.Name">DoctorID:</h3>
+        <p id="DocID" class="infoData" :class="post.Name">{{ post.DocID }}</p>
       </div>
     </div>
   </div>
@@ -39,6 +40,7 @@
 
 <script>
 import PostService from "../PostService";
+import $ from "jquery";
 
 export default {
   name: "PostComponent",
@@ -46,14 +48,27 @@ export default {
     return {
       posts: [], // to be filled with the data from the backend
       error: "",
-      name: "",
+      names: [],
+      showingPatient: "",
+      warnedPatients: [],
     };
   },
+  async created() {
+    try {
+      this.names = await PostService.getTableName();
+      this.warnedPatients = await PostService.setWarn(this.names);
+      this.warnedPatients.forEach((el) => {
+        $(`#${el}`).css("background-color", "red");
+      });
+    } catch (err) {
+      this.error = err.message;
+    }
+  },
   methods: {
-    async get_data(name) {
+    async get_data(names) {
       try {
-        this.posts = await PostService.getPosts(name);
-        this.name = name.charAt(0).toUpperCase() + name.slice(1);
+        this.posts = await PostService.getPosts(names);
+        this.showingPatient = names.charAt(0).toUpperCase() + names.slice(1);
       } catch (err) {
         this.error = err.message;
       }
@@ -86,11 +101,14 @@ h3 {
 p {
   display: inline-block;
   width: 90%;
+  color: black;
+  background-color: #fff;
 }
 button {
   width: 80px;
   height: 30px;
   font-size: 18px;
   cursor: pointer;
+  background-color: #ebebeb;
 }
 </style>
