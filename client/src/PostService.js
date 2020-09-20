@@ -32,10 +32,7 @@ class PostService {
         let temp = await axios.post(url + "setwarn", {
             names
         });
-
         return temp.data
-
-
     }
 }
 

@@ -10,8 +10,10 @@ app.use(cors());
 
 const posts = require("./routes/api/post");
 app.use('/api/posts', posts);
-
-
+app.use(express.json());
+app.use(express.urlencoded({
+    extended: false
+}));
 
 //Handle production, this part is for the situation when we deploy our code on heroku
 if (process.env.NODE_ENV === 'production') {
