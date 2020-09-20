@@ -17,6 +17,17 @@ function warnPatientInfo() {
 }
 
 const sqlFunction = {
+    createUser(userId) {
+        return new Promise((resolve, reject) => {
+            connection.query(`CREATE TABLE ${userId} (Name VARCHAR(50), Date Date, SBP INT(5), DBP INT(5), BloodSugar INT(5), WalkStep INT(5), SleepTime INT(2), DocID INT(4), Warn INT(4), LineID VARCHAR(20))`, function (err, data) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(true);
+                }
+            });
+        });
+    },
     get_data(name) {
         return new Promise((resolve, reject) => {
             connection.query(`SELECT * FROM ${name}`, function (err, rows, fields) {
@@ -54,7 +65,7 @@ const sqlFunction = {
                     for (var i = 0; i < data.length; i++) {
                         if (data[i].WalkStep < 1200) {
                             warnPatient.Name = el.charAt(0).toUpperCase() +
-                            el.slice(1);;
+                                el.slice(1);;
                             warnPatient.WalkStep.push(data[i].WalkStep);
                             sthWrong = true;
                         }
