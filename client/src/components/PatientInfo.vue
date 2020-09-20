@@ -6,7 +6,7 @@
       <button id="Win" v-on:click="get_data('win')">Win</button>
       <button id="Iris" v-on:click="get_data('iris')">Iris</button>
       <button id="Ben" v-on:click="get_data('ben')">Ben</button>
-      <p track-by="$index">Warning: {{ warnedPatients }}</p>
+      <p track-by="$index">Warning: {{ warnedPatients}}</p>
     </div>
     <hr />
     <p class="error" v-if="error">{{ error }}</p>
@@ -28,7 +28,18 @@
         <h3 class="infoTitle" :class="post.Name">BloodSugar:</h3>
         <p id="BloodSugar" class="infoData" :class="post.Name">{{ post.BloodSugar }}</p>
         <h3 class="infoTitle" :class="post.Name">WalkStep:</h3>
-        <p id="WalkStep" class="infoData" :class="post.Name">{{ post.WalkStep }}</p>
+        <p
+          id="WalkStep"
+          class="infoData"
+          :class="post.Name"
+          v-if="nowWarnPatient === {} ||nowWarnPatient.WalkStep.find(el=>el===post.WalkStep)===undefined"
+        >{{ post.WalkStep }}</p>
+        <p
+          id="WalkStep"
+          class="infoData warnData"
+          :class="post.Name"
+          v-else-if="nowWarnPatient.WalkStep.find(el=>el===post.WalkStep)"
+        >{{ post.WalkStep }}</p>
         <h3 class="infoTitle" :class="post.Name">SleepTime:</h3>
         <p id="SleepTime" class="infoData" :class="post.Name">{{ post.SleepTime }}</p>
         <h3 class="infoTitle" :class="post.Name">DoctorID:</h3>
@@ -51,6 +62,7 @@ export default {
       names: [],
       showingPatient: "",
       warnedPatients: [],
+      nowWarnPatient: {},
     };
   },
   async created() {
@@ -58,17 +70,37 @@ export default {
       this.names = await PostService.getTableName();
       this.warnedPatients = await PostService.setWarn(this.names);
       this.warnedPatients.forEach((el) => {
-        $(`#${el}`).css("background-color", "red");
+        $(`#${el.Name}`).css("background-color", "red");
       });
     } catch (err) {
       this.error = err.message;
     }
   },
   methods: {
+    isWarned() {
+      let getIt = false;
+      this.warnedPatients.forEach((el) => {
+        if (el.Name === this.showingPatient) {
+          getIt = true;
+          this.nowWarnPatient = el;
+        }
+      });
+      if (!getIt) {
+        this.nowWarnPatient = {
+          Name: "no",
+          SBP: [],
+          DBP: [],
+          BloodSugar: [],
+          WalkStep: [],
+          SleepTime: [],
+        };
+      }
+    },
     async get_data(names) {
       try {
         this.posts = await PostService.getPosts(names);
         this.showingPatient = names.charAt(0).toUpperCase() + names.slice(1);
+        this.isWarned();
       } catch (err) {
         this.error = err.message;
       }
@@ -80,6 +112,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 * {
+  /* border: solid black 2px; */
   font-family: 微軟正黑體;
 }
 
@@ -110,5 +143,18 @@ button {
   font-size: 18px;
   cursor: pointer;
   background-color: #ebebeb;
+}
+
+.warnData {
+  color: white;
+  background-color: red;
+}
+
+.infoData {
+  width: 80%;
+}
+
+.infoTitle {
+  width: 20%;
 }
 </style>
