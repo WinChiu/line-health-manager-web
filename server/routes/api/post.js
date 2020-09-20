@@ -19,9 +19,18 @@ router.post("/setwarn", async (req, res) => {
     res.status(201).send(warnList);
 });
 
-router.post("/createTable/:who", async (req, res) => {
-    await sqlFunction.createUser(req.params.who);
-    res.status(201);
+// Create and add data to DB
+
+router.post("/createTable", async (req, res) => {
+    await sqlFunction.createUser(req.query.userID);
+    res.status(201).send(`create table ${req.query.userID}`);
 });
+
+router.post("/addData", async (req, res) => {
+    let data = req.query;
+    await sqlFunction.addData(data.userID, data.Name, data.Date, data.SBP, data.DBP, data.BloodSugar, data.WalkStep, data.SleepTime, data.DocID, data.Warn, data.LineID);
+    res.status(201).send(`add data to ${data.userID}`);
+});
+
 
 module.exports = router;

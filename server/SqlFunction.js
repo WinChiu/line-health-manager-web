@@ -28,6 +28,17 @@ const sqlFunction = {
             });
         });
     },
+    addData(userID, Name, Date, SBP, DBP, BloodSugar, WalkStep, SleepTime, DocID, Warn, LineID) {
+        return new Promise((resolve, reject) => {
+            connection.query(`INSERT INTO ${userID} (Name, Date, SBP, DBP, BloodSugar, WalkStep, SleepTime, DocID, Warn, LineID) VALUES ('${Name}', '${Date}', ${SBP}, ${DBP}, ${BloodSugar}, ${WalkStep}, ${SleepTime}, ${DocID}, ${Warn}, ${LineID})`, function (err, data) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(true);
+                }
+            });
+        });
+    },
     get_data(name) {
         return new Promise((resolve, reject) => {
             connection.query(`SELECT * FROM ${name}`, function (err, rows, fields) {
