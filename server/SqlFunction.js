@@ -7,6 +7,15 @@ var connection = mysql.createConnection({
     database: "vsine0ibs4j6lk5u",
 });
 
+function warnPatientInfo() {
+    this.Name = null,
+        this.SBP = [],
+        this.DBP = [],
+        this.BloodSugar = [],
+        this.WalkStep = [],
+        this.SleepTime = []
+}
+
 const sqlFunction = {
     get_data(name) {
         return new Promise((resolve, reject) => {
@@ -36,17 +45,24 @@ const sqlFunction = {
     },
     detect_walkStep(el, warnList) {
         return new Promise((resolve, reject) => {
+            var warnPatient = new warnPatientInfo();
             connection.query(`SELECT WalkStep FROM ${el}`, function (err, data) {
                 if (err) {
                     reject(err)
                 } else {
+                    let sthWrong = false;
                     for (var i = 0; i < data.length; i++) {
                         if (data[i].WalkStep < 1200) {
-                            warnList.push(el.charAt(0).toUpperCase() + el.slice(1));
+                            warnPatient.Name = el.charAt(0).toUpperCase() +
+                            el.slice(1);;
+                            warnPatient.WalkStep.push(data[i].WalkStep);
+                            sthWrong = true;
                         }
                     }
+                    if (sthWrong === true) {
+                        warnList.push(warnPatient);
+                    }
                     resolve(true);
-
                 }
             });
         })

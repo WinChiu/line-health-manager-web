@@ -29,9 +29,13 @@ class PostService {
         }
     }
     static async setWarn(names) {
-        return await axios.post(url+"setwarn", {
+        let temp = await axios.post(url + "setwarn", {
             names
         });
+
+        return temp.data
+
+
     }
 }
 
