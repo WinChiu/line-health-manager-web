@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'production') {
 
     // Hande SPA
     app.use(/.*/, (req, res) => {
-        res.sendFile('../public/index.html');
+        res.sendFile(__dirname + '/../client/public/index.html');
     }); // Refer to any route at all
 }
 
