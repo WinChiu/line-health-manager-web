@@ -15,9 +15,6 @@ app.use(express.urlencoded({
     extended: false
 }));
 
-app.get((res, req) => {
-    res.send("hello");
-});
 
 //Handle production, this part is for the situation when we deploy our code on heroku
 if (process.env.NODE_ENV === 'production') {
