@@ -18,12 +18,11 @@ app.use(express.urlencoded({
 
 //Handle production, this part is for the situation when we deploy our code on heroku
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(__dirname, '/../client/public'));
+    app.use(express.static(__dirname + '/public'));
 
     // Hande SPA
     app.use(/.*/, (req, res) => {
-        //res.sendFile(__dirname + '/../client/public/index.html');
-        res.send(__dirname + '/../client/public/index.html');
+        res.sendFile('../public');
     }); // Refer to any route at all
 }
 
