@@ -44,10 +44,23 @@ const sqlFunction = {
             connection.query(`SELECT * FROM ${name}`, function (err, rows, fields) {
                 if (err) {
                     reject(err);
+
                 } else {
                     resolve(rows);
                 }
             });
+        });
+    },
+    get_all_data() {
+        return new Promise(async (resolve, reject) => {
+            let tableName = await this.show_tableName();
+            let allData = [];
+            let i = 0;
+            for (i = 0; i < tableName.length; i++) {
+                let data = await this.get_data(tableName[i].Tables_in_vsine0ibs4j6lk5u)
+                allData.push(data);
+            }
+            resolve(allData);
         });
     },
     show_tableName() {
