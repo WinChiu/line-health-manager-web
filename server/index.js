@@ -18,6 +18,34 @@ app.use(express.urlencoded({
     extended: false
 }));
 
+app.post("/api/user/login", bodyParser.urlencoded({
+    extended: false
+}), bodyParser.json(), (req, res) => {
+    console.log(req.body);
+    res.json({
+        code: 20000,
+        data: {
+            "name": "admin",
+            "say": "hi"
+        },
+        token: "111111"
+    });
+})
+
+app.get("/api/user/info", (req, res) => {
+    console.log("Info query", req.query);
+    console.log("Info params", req.params);
+    res.json({
+        "code": 20000,
+        "data": {
+            "roles": ["admin"],
+            "introduction": "I am a super administrator",
+            "avatar": "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif",
+            "name": "Super Admin"
+        }
+    });
+})
+
 //Handle production, this part is for the situation when we deploy our code on heroku
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(__dirname + '/public'));
