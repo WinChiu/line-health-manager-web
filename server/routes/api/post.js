@@ -17,8 +17,8 @@ router.get("/", async (req, res) => {
 
 router.post("/sendtable", async (req, res) => {
     let tableData = req.query;
-    await sqlFunction.create_user_diseaseTable(tableData.userID);
-    await sqlFunction.add_diseaseTable_data(tableData.userID, tableData.Endocrine, tableData.Nerve, tableData.Cycle, tableData.Tumor, tableData.Respiratory, tableData.Urinary, tableData.BoneMuscle, tableData.Skin, tableData.Blood)
+    await sqlFunction.create_user_diseaseTable(tableData.userId);
+    await sqlFunction.add_diseaseTable_data(tableData.username, tableData.userId, tableData.usergender, tableData.birthdate, tableData.userphone, tableData.docid, tableData.emergencyphone, tableData.emergencyman, tableData.adress, tableData.metabolism, tableData.nerve, tableData.circle, tableData.tumor, tableData.respiratory, tableData.urinary, tableData.bone, tableData.skin, tableData.blood)
     res.send(tableData);
 });
 

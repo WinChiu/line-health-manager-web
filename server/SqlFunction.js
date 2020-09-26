@@ -19,17 +19,27 @@ function warnPatientInfo() {
 const sqlFunction = {
     create_user_diseaseTable(userID) {
         return new Promise((resolve, reject) => {
-            userID = userID + "_disease_table";
+            userID = userID + "_diseaseTable";
             connection.query(`CREATE TABLE ${userID} (
-                Endocrine VARCHAR(100),
-                Nerve VARCHAR(100),
-                Cycle VARCHAR(100),
-                Tumor VARCHAR(100),
-                Respiratory VARCHAR(100),
-                Urinary VARCHAR(100),
-                BoneMuscle VARCHAR(100),
-                Skin VARCHAR(100),
-                Blood VARCHAR(100))`, function (err, data) {
+                username VARCHAR(100),
+                userId VARCHAR(100),
+                usergender VARCHAR(100),
+                birthdate VARCHAR(100),
+                userphone VARCHAR(100),
+                docid VARCHAR(100),
+                emergencyphone VARCHAR(100),
+                emergencyman VARCHAR(100),
+                adress VARCHAR(100),
+
+                metabolism VARCHAR(100),
+                nerve VARCHAR(100),
+                circle VARCHAR(100),
+                tumor VARCHAR(100),
+                respiratory VARCHAR(100),
+                urinary VARCHAR(100),
+                bone VARCHAR(100),
+                skin VARCHAR(100),
+                blood VARCHAR(100))`, function (err, data) {
                 if (err) {
                     reject(err);
                 } else {
@@ -38,10 +48,15 @@ const sqlFunction = {
             });
         });
     },
-    add_diseaseTable_data(userID, endocrine, nerve, cycle, tumor, respiratory, urinary, boneMuscle, skin, blood) {
+    add_diseaseTable_data(username, userId, usergender, birthdate, userphone, docid, emergencyphone, emergencyman, adress, metabolism, nerve, circle, tumor, respiratory, urinary, bone, skin, blood) {
         return new Promise((resolve, reject) => {
-            userID = userID + "_disease_table";
-            connection.query(`INSERT INTO ${userID} (Endocrine, Nerve, Cycle, Tumor, Respiratory, Urinary, BoneMuscle, Skin, Blood) VALUES ('${endocrine}', '${nerve}', '${cycle}', '${tumor}', '${respiratory}', '${urinary}', '${boneMuscle}', '${skin}', '${blood}')`, function (err, data) {
+            userId = userId + "_diseaseTable";
+            let a = [username, userId, usergender, birthdate, userphone, docid, emergencyphone, emergencyman, adress, metabolism, nerve, circle, tumor, respiratory, urinary, bone, skin, blood]
+            a.forEach(el => {
+                el = this.to_string(el);
+            })
+            connection.query(`INSERT INTO ${userId} (username, userId, usergender, birthdate, userphone, docid, emergencyphone, emergencyman, adress, metabolism, nerve, circle, tumor, respiratory, urinary, bone, skin, blood)
+            VALUES ('${username}', '${userId}', '${usergender}', '${birthdate}', '${userphone}', '${docid}', '${emergencyphone}', '${emergencyman}', '${adress}', '${metabolism}', '${nerve}', '${circle}', '${tumor}', '${respiratory}', '${urinary}', '${bone}', '${skin}', '${blood}')`, function (err, data) {
                 if (err) {
                     reject(err);
                 } else {
@@ -50,6 +65,12 @@ const sqlFunction = {
                 }
             });
         });
+    },
+    to_string(obj) {
+        if (Array.isArray(obj)) {
+            obj = obj.toString();
+        }
+        return obj;
     },
     createUser(userId) {
         return new Promise((resolve, reject) => {
@@ -101,17 +122,19 @@ const sqlFunction = {
     },
     show_tableName() {
         return new Promise((resolve, reject) => {
-            connection.query(`SHOW tables`, function (err, tables, fields) {
-                if (err) {
-                    reject(err);
-                } else {
-                    var nameList = [];
-                    tables.forEach((el) => {
-                        nameList.push(el.Tables_in_vsine0ibs4j6lk5u);
-                    });
-                    resolve(tables);
-                }
-            });
+            connection.query(`SHOW TABLES WHERE tables_in_vsine0ibs4j6lk5u NOT LIKE '%diseaseTable'`,
+                function (err, tables, fields) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        var nameList = [];
+                        var toBeDelete = [];
+                        tables.forEach((el) => {
+                            nameList.push(el.Tables_in_vsine0ibs4j6lk5u);
+                        });
+                        resolve(tables);
+                    }
+                });
         });
     },
     detect_walkStep(el, warnList) {
