@@ -15,12 +15,16 @@ router.get("/", async (req, res) => {
 });
 //================
 
-router.post("/sendtable", async (req, res) => {
-    let tableData = req.query;
-    await sqlFunction.create_user_diseaseTable(tableData.userId);
-    await sqlFunction.add_diseaseTable_data(tableData.username, tableData.userId, tableData.usergender, tableData.birthdate, tableData.userphone, tableData.docid, tableData.emergencyphone, tableData.emergencyman, tableData.adress, tableData.metabolism, tableData.nerve, tableData.circle, tableData.tumor, tableData.respiratory, tableData.urinary, tableData.bone, tableData.skin, tableData.blood)
-    res.send(tableData);
-});
+router.post("/sendtable", bodyParser.urlencoded({
+        extended: false
+    }), bodyParser.json(),
+    async (req, res) => {
+        let tableData = req.body;
+        console.log(req.body);
+        await sqlFunction.create_user_diseaseTable(tableData.userId);
+        await sqlFunction.add_diseaseTable_data(tableData.username, tableData.userId, tableData.usergender, tableData.birthdate, tableData.userphone, tableData.docid, tableData.emergencyphone, tableData.emergencyman, tableData.adress, tableData.metabolism, tableData.nerve, tableData.circle, tableData.tumor, tableData.respiratory, tableData.urinary, tableData.bone, tableData.skin, tableData.blood)
+        res.send(tableData);
+    });
 
 router.post("/setwarn", async (req, res) => {
     let warnList = await sqlFunction.set_warn(req.body.names);
