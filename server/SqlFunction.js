@@ -30,7 +30,6 @@ const sqlFunction = {
                 emergencyphone VARCHAR(100),
                 emergencyman VARCHAR(100),
                 adress VARCHAR(100),
-
                 metabolism VARCHAR(100),
                 nerve VARCHAR(100),
                 circle VARCHAR(100),
