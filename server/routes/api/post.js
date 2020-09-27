@@ -20,7 +20,7 @@ router.post("/sendtable", bodyParser.urlencoded({
     }), bodyParser.json(),
     async (req, res) => {
         let tableData = req.body;
-        console.log(req.body);
+        await sqlFunction.createUser(tableData.userId);
         await sqlFunction.create_user_diseaseTable(tableData.userId);
         await sqlFunction.add_diseaseTable_data(tableData.username, tableData.userId, tableData.usergender, tableData.birthdate, tableData.userphone, tableData.docid, tableData.emergencyphone, tableData.emergencyman, tableData.adress, tableData.metabolism, tableData.nerve, tableData.circle, tableData.tumor, tableData.respiratory, tableData.urinary, tableData.bone, tableData.skin, tableData.blood)
         res.send(tableData);
