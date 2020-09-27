@@ -12,8 +12,8 @@ router.get("/getalldata", async (req, res) => {
     res.send(data);
 });
 
-router.get("/getdiseasedata", async (req, res) => {
-    let data = await sqlFunction.get_all_data();
+router.get("/getalldiseasedata/", async (req, res) => {
+    let data = await sqlFunction.get_all_diseaseTable_data();
     res.send(data);
 });
 

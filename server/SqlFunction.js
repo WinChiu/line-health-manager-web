@@ -49,12 +49,12 @@ const sqlFunction = {
     },
     add_diseaseTable_data(username, userId, usergender, birthdate, userphone, docid, emergencyphone, emergencyman, adress, metabolism, nerve, circle, tumor, respiratory, urinary, bone, skin, blood) {
         return new Promise((resolve, reject) => {
-            userId = userId + "_diseaseTable";
+            tableName = userId + "_diseaseTable";
             let a = [username, userId, usergender, birthdate, userphone, docid, emergencyphone, emergencyman, adress, metabolism, nerve, circle, tumor, respiratory, urinary, bone, skin, blood]
             a.forEach(el => {
                 el = this.to_string(el);
             })
-            connection.query(`INSERT INTO ${userId} (username, userId, usergender, birthdate, userphone, docid, emergencyphone, emergencyman, adress, metabolism, nerve, circle, tumor, respiratory, urinary, bone, skin, blood)
+            connection.query(`INSERT INTO ${tableName} (username, userId, usergender, birthdate, userphone, docid, emergencyphone, emergencyman, adress, metabolism, nerve, circle, tumor, respiratory, urinary, bone, skin, blood)
             VALUES ('${username}', '${userId}', '${usergender}', '${birthdate}', '${userphone}', '${docid}', '${emergencyphone}', '${emergencyman}', '${adress}', '${metabolism}', '${nerve}', '${circle}', '${tumor}', '${respiratory}', '${urinary}', '${bone}', '${skin}', '${blood}')`, function (err, data) {
                 if (err) {
                     reject(err);
@@ -63,6 +63,29 @@ const sqlFunction = {
                     resolve(true);
                 }
             });
+        });
+    },
+    get_diseaseTable_data(userId) {
+        return new Promise((resolve, reject) => {
+            connection.query(`SELECT * FROM ${userId}`, function (err, data) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(data);
+                }
+            })
+        })
+    },
+    get_all_diseaseTable_data() {
+        return new Promise(async (resolve, reject) => {
+            let tableName = await this.show_diseasetableName();
+            let allData = [];
+            let i = 0;
+            for (i = 0; i < tableName.length; i++) {
+                let data = await this.get_diseaseTable_data(tableName[i].Tables_in_vsine0ibs4j6lk5u)
+                allData.push(data);
+            }
+            resolve(allData);
         });
     },
     to_string(obj) {
@@ -100,7 +123,6 @@ const sqlFunction = {
             connection.query(`SELECT * FROM ${name}`, function (err, rows, fields) {
                 if (err) {
                     reject(err);
-
                 } else {
                     resolve(rows);
                 }
@@ -127,7 +149,23 @@ const sqlFunction = {
                         reject(err);
                     } else {
                         var nameList = [];
-                        var toBeDelete = [];
+                        tables.forEach((el) => {
+                            nameList.push(el.Tables_in_vsine0ibs4j6lk5u);
+                        });
+                        resolve(tables);
+                    }
+                });
+        });
+    },
+    show_diseasetableName() {
+        return new Promise((resolve, reject) => {
+            connection.query(`SHOW TABLES WHERE tables_in_vsine0ibs4j6lk5u LIKE '%diseaseTable'`,
+                function (err, tables, fields) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        console.log(tables);
+                        var nameList = [];
                         tables.forEach((el) => {
                             nameList.push(el.Tables_in_vsine0ibs4j6lk5u);
                         });
